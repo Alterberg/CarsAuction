@@ -1,61 +1,62 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as carActions from "../../redux/actions/carActions";
+import * as sellerActions from "../../redux/actions/sellerActions";
 import PropTypes from "prop-types";
+import CarList from "./CarList";
 import { bindActionCreators } from "redux";
 
 class CarsPage extends React.Component {
-        state = {
-            car: {
-                model: ""
-            }
-        };
+    componentDidMount() {
+        const { sellers, cars, actions } = this.props;
 
-    handleChange = (event) => {
-        const car = { ...this.state.car, model: event.target.value };
-        this.setState({ car });
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-        this.props.actions.createCar(this.state.car);
-        this.setState({
-            car: {
-                model: ""
-            }
-        })
-    };
+        if (cars.length === 0) {
+                actions.loadCars().catch(error => {
+                alert("loading cars list failed with error: " + error);
+            });
+        }
+        
+        if (sellers.length === 0) {
+                actions.loadSellers().catch(error => {
+                alert("loading sellers list failed with error: " + error);
+            });
+        }
+    }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+           <>
                 <h2>Cars</h2>
-                <h2>Add Car</h2>
-                <input type="text" onChange={this.handleChange} value={this.state.car.model} />
-
-                <input type="submit" value="Save" />
-                {this.props.cars.map((car, index) => (
-                    <div key={index}>{car.model}</div>
-                ))}
-            </form>   
+                <CarList cars={this.props.cars} />
+            </>
         );
     }
 }
 
 CarsPage.propTypes = {
+    actions: PropTypes.object.isRequired,
     cars: PropTypes.array.isRequired,
-    actions: PropTypes.func.isRequired
+    sellers: PropTypes.array.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        cars: state.cars
+        cars: state.sellers.length === 0 ? [] : state.cars.map(car => {
+            return {
+                ...car,
+                sellerName: state.sellers.find(a => a.id === car.sellerId).name
+            }
+        }),
+        sellers: state.sellers
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(carActions, dispatch)
+        actions: {
+            loadCars: bindActionCreators(carActions.loadCars, dispatch),
+            loadSellers: bindActionCreators(sellerActions.loadSellers, dispatch)
+        }
     };
 }
 
