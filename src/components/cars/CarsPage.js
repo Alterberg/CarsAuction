@@ -5,8 +5,13 @@ import * as sellerActions from "../../redux/actions/sellerActions";
 import PropTypes from "prop-types";
 import CarList from "./CarList";
 import { bindActionCreators } from "redux";
+import { Redirect } from "react-router";
 
 class CarsPage extends React.Component {
+    state = {
+        redirectToAddCarPage: false
+    };
+    
     componentDidMount() {
         const { sellers, cars, actions } = this.props;
 
@@ -25,8 +30,19 @@ class CarsPage extends React.Component {
 
     render() {
         return (
-           <>
+            <>
+                {this.state.redirectToAddCarPage && <Redirect to="/car"/>}
                 <h2>Cars</h2>
+
+                <button
+                    style={{ marginBottom: 20 }}
+                    className="btn btn-primary add-car"
+                    onClick={() => this.setState({redirectToAddCarPage: true})}
+
+                >
+                    Add Car
+                </button>
+
                 <CarList cars={this.props.cars} />
             </>
         );

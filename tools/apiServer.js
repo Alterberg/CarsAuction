@@ -42,11 +42,11 @@ server.use((req, res, next) => {
 });
 
 server.post("/cars/", function(req, res, next) {
-  const error = validateCourse(req.body);
+  const error = validateCar(req.body);
   if (error) {
     res.status(400).send(error);
   } else {
-    req.body.slug = createSlug(req.body.title); // Generate a slug for new courses.
+    req.body.slug = createSlug(req.body.model); // Generate a slug for new courses.
     next();
   }
 });
@@ -70,9 +70,8 @@ function createSlug(value) {
     .toLowerCase();
 }
 
-function validateCourse(car) {
+function validateCar(car) {
   if (!car.model) return "Model is required.";
-  if (!car.price) return "Price is required.";
   if (!car.category) return "Category is required.";
   return "";
 }
