@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import cars from "./carReducer";
+import sellers from "./sellerReducer";
 
 const rootReducer = combineReducers({
-    cars
+    cars,
+    sellers
 });
 
 export default rootReducer;

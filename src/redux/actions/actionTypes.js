@@ -1,1 +1,5 @@
 export const CREATE_CAR = "CREATE_CAR";
+
+export const LOAD_CARS_SUCCESS = "LOAD_CARS_SUCCESS";
+
+export const LOAD_SELLERS_SUCCESS = "LOAD_SELLERS_SUCCESS";
