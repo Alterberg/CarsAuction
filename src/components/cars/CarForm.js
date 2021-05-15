@@ -24,7 +24,7 @@ const CarForm = ({
         label="Model"
         value={car.model}
         onChange={onChange}
-        error={errors.title}
+        error={errors.model}
       />
 
       <SelectInput
