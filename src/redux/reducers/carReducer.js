@@ -11,6 +11,8 @@ export default function carReducer(state = initialState.cars, action) {
             );
         case types.LOAD_CARS_SUCCESS:
             return action.cars;
+        case types.DELETE_CAR_OPTIMISTIC:
+            return state.filter(car => car.id !== action.car.id);
         default:
             return state;
     }

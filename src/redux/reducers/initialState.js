@@ -1,4 +1,5 @@
 export default {
     cars: [],
-    sellers: []
+    sellers: [],
+    apiCallsInProgress: 0
 }

@@ -6,6 +6,9 @@ import PropTypes from "prop-types";
 import CarList from "./CarList";
 import { bindActionCreators } from "redux";
 import { Redirect } from "react-router";
+import Spinner from "../common/Spinner";
+import { deleteCar } from "../../api/carApi";
+import { toast } from "react-toastify";
 
 class CarsPage extends React.Component {
     state = {
@@ -28,12 +31,19 @@ class CarsPage extends React.Component {
         }
     }
 
+    handleDeleteCar = car => {
+        toast.success("Car successfully deleted");
+        this.props.actions.deleteCar(car)
+            .catch(error => {
+                toast.error("Error occurred. " + error.message, { autoClose: false })
+            });
+    }
+
     render() {
         return (
             <>
                 {this.state.redirectToAddCarPage && <Redirect to="/car"/>}
                 <h2>Cars</h2>
-
                 <button
                     style={{ marginBottom: 20 }}
                     className="btn btn-primary add-car"
@@ -42,8 +52,10 @@ class CarsPage extends React.Component {
                 >
                     Add Car
                 </button>
-
-                <CarList cars={this.props.cars} />
+                {this.props.loading ?
+                    <Spinner /> : (
+                    <CarList onDeleteClick={this.handleDeleteCar} cars={this.props.cars} />
+                )}
             </>
         );
     }
@@ -52,7 +64,8 @@ class CarsPage extends React.Component {
 CarsPage.propTypes = {
     actions: PropTypes.object.isRequired,
     cars: PropTypes.array.isRequired,
-    sellers: PropTypes.array.isRequired
+    sellers: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
@@ -63,7 +76,8 @@ function mapStateToProps(state) {
                 sellerName: state.sellers.find(a => a.id === car.sellerId).name
             }
         }),
-        sellers: state.sellers
+        sellers: state.sellers,
+        loading: state.apiCallsInProgress > 0
     };
 }
 
@@ -71,7 +85,8 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: {
             loadCars: bindActionCreators(carActions.loadCars, dispatch),
-            loadSellers: bindActionCreators(sellerActions.loadSellers, dispatch)
+            loadSellers: bindActionCreators(sellerActions.loadSellers, dispatch),
+            deleteCar: bindActionCreators(carActions.deleteCar, dispatch),
         }
     };
 }

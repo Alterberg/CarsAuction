@@ -5,10 +5,13 @@ import {loadSellers} from "../../redux/actions/sellerActions";
 import PropTypes from "prop-types";
 import CarForm from "./CarForm";
 import { newCar } from "../../../tools/mockData";
+import Spinner from "../common/Spinner";
+import { toast } from "react-toastify";
 
 function ManageCarsPage({ sellers, cars, loadCars, loadSellers, saveCar, history, ...props }) {
     const [car, setCar] = useState({...props.car});
     const [errors, setErrors] = useState({});
+    const [saving, setSaving] = useState(false);
     
     useEffect(() => {
         if (cars.length === 0) {
@@ -35,15 +38,36 @@ function ManageCarsPage({ sellers, cars, loadCars, loadSellers, saveCar, history
         }));
     }
 
+    function isFormValid() {
+        const { model, sellerId, category } = car;
+        const errors = {};
+
+        if (!model) errors.model = "Model is required.";
+        if (!sellerId) errors.seller = "Seller is required.";
+        if (!category) errors.category = "Category is required.";
+
+        setErrors(errors);
+        
+        return Object.keys(errors).length === 0;
+    }
+
     function handleSave(event) {
         event.preventDefault();
-        saveCar(car).then(() => {
-            history.push("/cars");
-        });
+        if (!isFormValid()) return;
+        setSaving(true);
+        saveCar(car)
+            .then(() => {
+                toast.success("Car successfully saved")
+                history.push("/cars");
+            })
+            .catch(error => {
+                setSaving(false);
+                setErrors({ onSave: error.message });
+            });
     }
     
-    return (
-        <CarForm car={car} errors={errors} sellers={sellers} onChange={handleChange} onSave={handleSave} />
+    return sellers.length === 0 || cars.length === 0 ? (<Spinner />) : (
+        <CarForm car={car} errors={errors} sellers={sellers} onChange={handleChange} onSave={handleSave} saving={saving} />
     );
 }
 
