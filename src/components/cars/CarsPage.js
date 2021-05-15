@@ -7,7 +7,6 @@ import CarList from "./CarList";
 import { bindActionCreators } from "redux";
 import { Redirect } from "react-router";
 import Spinner from "../common/Spinner";
-import { deleteCar } from "../../api/carApi";
 import { toast } from "react-toastify";
 
 class CarsPage extends React.Component {
@@ -31,13 +30,14 @@ class CarsPage extends React.Component {
         }
     }
 
-    handleDeleteCar = car => {
+    handleDeleteCar = async car => {
         toast.success("Car successfully deleted");
-        this.props.actions.deleteCar(car)
-            .catch(error => {
-                toast.error("Error occurred. " + error.message, { autoClose: false })
-            });
-    }
+        try {
+            await this.props.actions.deleteCar(car);
+        } catch (error) {
+            toast.error("Error occurred. " + error.message, { autoClose: false });
+        }
+    };
 
     render() {
         return (
