@@ -8,7 +8,7 @@ import { newCar } from "../../../tools/mockData";
 import Spinner from "../common/Spinner";
 import { toast } from "react-toastify";
 
-function ManageCarsPage({ sellers, cars, loadCars, loadSellers, saveCar, history, ...props }) {
+export function ManageCarsPage({ sellers, cars, loadCars, loadSellers, saveCar, history, ...props }) {
     const [car, setCar] = useState({...props.car});
     const [errors, setErrors] = useState({});
     const [saving, setSaving] = useState(false);
