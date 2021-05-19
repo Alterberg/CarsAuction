@@ -6,9 +6,8 @@ const CarList = ({ cars, onDeleteClick }) => (
   <table className="table">
     <thead>
       <tr>
-        <th />
         <th>Title</th>
-        <th>Author</th>
+        <th>Seller</th>
         <th>Category</th>
         <th />
       </tr>
@@ -18,19 +17,12 @@ const CarList = ({ cars, onDeleteClick }) => (
         return (
           <tr key={car.id}>
             <td>
-              <a
-                className="btn btn-light"
-                href={"http://pluralsight.com/courses/" + car.slug}
-              >
-                Watch
-              </a>
-            </td>
-            <td>
               <Link to={"/car/" + car.slug}>{car.model}</Link>
             </td>
             <td>{car.sellerName}</td>
             <td>{car.category}</td>
-            <td>
+            {onDeleteClick && (
+              <td>
               <button
                 className="btn btn-outline-danger"
                 onClick={() => onDeleteClick(car)}
@@ -38,6 +30,7 @@ const CarList = ({ cars, onDeleteClick }) => (
                 Delete
               </button>
             </td>
+            )}
           </tr>
         );
       })}
@@ -47,7 +40,7 @@ const CarList = ({ cars, onDeleteClick }) => (
 
 CarList.propTypes = {
   cars: PropTypes.array.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func,
 };
 
 export default CarList;

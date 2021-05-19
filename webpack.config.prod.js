@@ -17,13 +17,15 @@ module.exports = {
     filename: "bundle.js"
   },
   plugins: [
+    // Display bundle stats
     new webpackBundleAnalyzer.BundleAnalyzerPlugin({ analyzerMode: "static" }),
 
     new MiniCssExtractPlugin({
-      filename: "[name],[contenthash].css"
+      filename: "[name].[contenthash].css"
     }),
 
     new webpack.DefinePlugin({
+      // This global makes sure React is built in prod mode.
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
       "process.env.API_URL": JSON.stringify("http://localhost:3001")
     }),
@@ -31,6 +33,7 @@ module.exports = {
       template: "src/index.html",
       favicon: "src/favicon.ico",
       minify: {
+        // see https://github.com/kangax/html-minifier#options-quick-reference
         removeComments: true,
         collapseWhitespace: true,
         removeRedundantAttributes: true,
@@ -38,45 +41,38 @@ module.exports = {
         removeEmptyAttributes: true,
         removeStyleLinkTypeAttributes: true,
         keepClosingSlash: true,
-        minifyCSS: true,
         minifyJS: true,
-        minifyURLs: true,
+        minifyCSS: true,
+        minifyURLs: true
       }
     })
   ],
   module: {
     rules: [
-        {
-            test: /\.(js|jsx)$/,
-            exclude: /node_modules/,
-            use: [
-                {
-                    loader: "babel-loader"
-                },
-                {
-                    loader: "eslint-loader"
-                }
-            ]
-        },
-        {
-          test: /(\.css)$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: "css-loader",
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                plugins: () => [require("cssnano")],
-                sourceMap: true
-              }
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ["babel-loader", "eslint-loader"]
+      },
+      {
+        test: /(\.css)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true
             }
-          ]
-        }
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              plugins: () => [require("cssnano")],
+              sourceMap: true
+            }
+          }
+        ]
+      }
     ]
   }
 };

@@ -57,7 +57,7 @@ export function ManageCarsPage({ sellers, cars, loadCars, loadSellers, saveCar, 
         setSaving(true);
         saveCar(car)
             .then(() => {
-                toast.success("Car successfully saved")
+                toast.success("Car successfully saved");
                 history.push("/cars");
             })
             .catch(error => {
